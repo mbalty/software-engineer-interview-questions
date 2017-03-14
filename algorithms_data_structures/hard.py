@@ -98,5 +98,9 @@ def getChangeDynamic(coins, sum):
 
 
 
+if __name__ == "__main__":
+    pass
+
+
 
 

@@ -14,22 +14,22 @@ class ListNode:
             node = node.next
         return head
 
+    def __str__(self):
+        return str(self.val) + " → " + str(self.next)
 
 def reverseList(head):
     if not head or not head.next:
         return head
-    cur = head.next
-    prev = head
 
-    while cur.next:
-        tmp = cur.next
-        cur.next = prev
+    cur = head
+    prev = None
+
+    while cur:
+        tmp = prev
         prev = cur
-        cur = tmp
-
-    return cur
-
-
+        cur = cur.next
+        prev.next = tmp
+    return prev
 
 # you are given an array of length n-1 that contains all numbers from 1 to n exactly once, besides 1 number that is missing.
 # Find that number. (possible solution: gauss sum (sum of 1 to n))
@@ -59,7 +59,7 @@ def findMissingSorted(arr):
     lo = 0
     hi = len(arr)-1
     while lo < hi:
-        mid = (lo+hi)/2
+        mid = int((lo+hi)/2)
         if arr[mid] == mid+1:
             lo = mid + 1
         else:
@@ -125,5 +125,49 @@ def stockMaxProfit(stocks):
     return max_profit
 
 
+#tests
+def testReverseList():
+    print("***testing reverse list")
+    node = ListNode.from_array([1,2,3,4])
+    print("original", str(node))
+    node = reverseList(node)
+    print("reversed", str(node))
+
+
+def testFindMissing():
+    print("***testing find missing")
+    arr = [3,2,4,1,7,6]
+    print('gauss', findMissingGauss(arr))
+    print('xor', findMissingXor(arr))
+    print('sorted', findMissingSorted(sorted(arr)))
+
+
+def testMoveZeros():
+    print("***tetsing move zeros to end")
+    arr = [0,0,1,0,2,0,4,5,0]
+    print("input", arr)
+    moveZerosToEnd(arr)
+    print("out", arr)
+
+
+def test2sum():
+    print("***testing 2 sum")
+    arr = [2,5,7,8,3,2,7,9,0,5]
+    print("set ", twoSumSet(arr, 12))
+    print("sorted ", twoSumSet(arr, 12))
+
+
+def testmaxProfit():
+    print("***testing max profit")
+    arr = [3,5,7,8,3,1,2,7,0,5]
+    print("stocks ", arr)
+    print("max profit ", stockMaxProfit(arr))
+
+if __name__ == "__main__":
+    testReverseList()
+    testFindMissing()
+    testMoveZeros()
+    test2sum()
+    testmaxProfit()
 
 

@@ -5,7 +5,7 @@
 
 def reverse(arr):
     ln = len(arr)
-    for i in range(ln/2):
+    for i in range(int(ln/2)):
         j = ln-1-i
         arr[i], arr[j] = arr[j], arr[i]
 
@@ -94,4 +94,40 @@ def fibDynamic(n):
 
     return fib2
 
+
+
+#tests
+def testReverse():
+    print("***testing reverse")
+    arr = [1,2,3,4]
+    print("original", arr)
+    reverse(arr)
+    print("reversed", arr)
+
+
+def testUnique():
+    print("***testing unique")
+    arr = [3,2,4,1,7,6]
+    print('unique', arr,  uniqueWithSet(arr), uniqueWithSorting(arr))
+    arr = [3,7,2,4,1,7,6]
+    print('not-unique', arr, uniqueWithSet(arr), uniqueWithSorting(arr))
+
+
+def testFindDup():
+    print("***tetsing find dup")
+    arr = [0,1,0,2,0,4,5,2]
+    print("dup", arr, findDuplicatesSorting(arr), findDuplicatesWithDict(arr))
+
+
+def testFib():
+    print("***testing fib")
+    n = 10
+    print("n ", n, fibReccursive(n), fibDynamic(n))
+
+
+if __name__ == "__main__":
+    testReverse()
+    testUnique()
+    testFindDup()
+    testFib()
 
