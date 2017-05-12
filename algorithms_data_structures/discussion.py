@@ -26,6 +26,9 @@ class Stack:
     def size(self):
         return len(self)
 
+    def __str__(self):
+        return str(self._internal)
+
 
 class Queue:
     def __init__(self):
@@ -49,7 +52,8 @@ class Queue:
                 self.outStack.push(self.inStack.pop())
         return self.outStack.pop()
 
-
+    def __str__(self):
+        return str(self.inStack)[:-1] + ', ' + str(self.outStack)[1:]
 
 
 # How would you design a LRU cache (least recently used cache).
@@ -64,6 +68,9 @@ class LinkedList:
             self.next = None
             self.prev = None
 
+        def __repr__(self):
+            return str((self.val, self.key))
+
     def __init__(self):
         self.head = None
         self.tail = None
@@ -71,30 +78,58 @@ class LinkedList:
     def addToHead(self, val, key=None):
         new = self.Node(val, key)
         new.next = self.head
-        self.head.prev = new
-        head = new
+        if self.head:
+            self.head.prev = new
+        else:
+            self.tail = new
+        self.head = new
 
     def moveToHead(self, node):
         if node is not self.head:
             tmp = node
-            node.prev.next = node.next
-            node.next.prev = node.prev
+            self.delete(node)
             tmp.next = self.head
-            self.head.prev = tmp
+            tmp.prev = None
             self.head = tmp
 
     def deleteLast(self):
-        deleted = self.tail.val
-        self.tail = self.tail.prev
-        self.tail.next = None
+        if self.tail:
+            deleted = self.tail.val
+            self.tail = self.tail.prev
+            if not self.tail:
+                self.head = None
+            else:
+                self.tail.next = None
+            return deleted
+        else:
+            return None
 
     def delete(self, node):
         if node is self.tail:
             self.deleteLast()
         elif node is self.head:
             self.head = self.head.next
-        else:
+            if not self.head:
+                self.tail = None
+            else:
+                self.head.prev = None
+        elif node.prev and node.next:
             node.prev.next = node.next
+            node.next.prev = node.prev
+        else:
+            raise Exception("node to delete not in list")
+
+    def __str__(self):
+        n = self.head
+        s = []
+        while n:
+            s.append(str((n.key, n.val)))
+            s.append(' -> ')
+            n = n.next
+        return ''.join(s[:-1])
+
+    def empty(self):
+        return self.head is None
 
 
 class LRUCahce:
@@ -119,9 +154,14 @@ class LRUCahce:
             raise KeyError(str(key) + " value not in cache")
 
     def delete_last(self):
+        if self.empty():
+            return None
         k = self.vals.tail.key
-        del self.cache[k]
+        v = self.vals.tail.val
         self.vals.deleteLast()
+        del self.cache[k]
+        return k, v
+
 
     def delete(self, key):
         try:
@@ -133,6 +173,40 @@ class LRUCahce:
             raise KeyError(str(key) + " value not in cache")
 
     def get_last_recently_used_entry(self):
+        if self.empty():
+            return None
         return self.vals.head.key, self.vals.head.val
 
+    def empty(self):
+        return self.vals.empty()
 
+    def __str__(self):
+        return "Dict:\nn" + str(self.cache) + '\nOrder:\n' + str(self.vals)
+
+def testQueue():
+    print ("***test Queue")
+    q = Queue()
+    q.enqueue(1)
+    q.enqueue(2)
+    q.enqueue(3)
+
+    print ("enqueued 1,2,3: ", q)
+    print (
+        "dequeued " + str(q.dequeue()) + ": ", q
+    )
+
+
+def testLRUCache():
+    print("***test LRU cache")
+    l = LRUCahce()
+    l.put('a', 1)
+    print (l.delete_last())
+    l.put('b', 1)
+    l.put('c', 1)
+    print (l.get_last_recently_used_entry())
+    print (l)
+
+
+if __name__ == "__main__":
+    testQueue()
+    testLRUCache()
